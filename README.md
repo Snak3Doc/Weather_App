@@ -1,7 +1,5 @@
 # Weather App
-| Remote Image | Local Image |
-|:------------:|:-----------:|
-| ![My Remote Image](https://i.imgur.com/sxvwMsf.png) | <img src="ui.excalidraw.svg" alt="My Icon" width="300" height="200"> |
+| ![My Remote Image](https://i.imgur.com/sxvwMsf.png) | <img src="ui.excalidraw.svg" alt="My Icon" width="450" height="358"> |
 
 ## Features
 - Get weather, time and date info from "city name, country code" search input
