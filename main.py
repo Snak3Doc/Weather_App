@@ -105,7 +105,7 @@ class MainWindow(QMainWindow):
         lyt_main_weather.addWidget(self.grpb_weather)
 
 
-
+        #TODO: Add Forcast UI
         ## Forcast UI
         # Widgets
         # Layouts
