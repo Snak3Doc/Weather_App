@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import requests
+from PyQt6.QtGui import QIcon
 from rich import print
 from rich.traceback import install
 install(show_locals=True)
@@ -57,9 +58,9 @@ def get_forcast(city_name, country_code):
 def get_icon(icon_code):
     icon_path = WORK_DIR/"weather_icons"/f"{icon_code}.png"
     if icon_path.exists():
-        print("File already exists")
-        icon_path = WORK_DIR/"weather_icons"/f"{icon_code}.png"
-        return icon_path
+        print("Icon already downloaded")
+        icon = QIcon(str(icon_path)).pixmap(92, 92)
+        return icon
     
     else:
         url = f"http://openweathermap.org/img/w/{icon_code}.png"
@@ -68,11 +69,13 @@ def get_icon(icon_code):
             if response.status_code == 200:
                 with open(WORK_DIR/"weather_icons"/f"{icon_code}.png", "wb") as icon_file:
                     icon_file.write(response.content)
-                    return icon_path
+                    print("Downloaded Icon")
+                    icon_path = WORK_DIR/"weather_icons"/f"{icon_code}.png"
+                    icon = QIcon(str(icon_path)).pixmap(92, 92)
+                    return icon
         
             else:
-                return f"Error, status code: {response.status_code}"
-            
+                return f"Error, status code: {response.status_code}"       
         except:
             print("Connection Error")
 
@@ -96,21 +99,22 @@ def write_json(data, filename):
         json.dump(data, file, indent=4)
 
 
+### Experiment With Function Calls Here ###
 if __name__ == "__main__":
     city_name = "Melbourne"
     country_code = "AU"
 
     weather_data = get_weather(city_name, country_code)
-    forcast_data = get_forcast(city_name, country_code)
+    # forcast_data = get_forcast(city_name, country_code)
 
-    write_json(weather_data, "data_weather.json")
-    write_json(forcast_data, "data_forcast.json")
+    # write_json(weather_data, "data_weather.json")
+    # write_json(forcast_data, "data_forcast.json")
 
-    local_time, local_date = get_local_time(weather_data["timezone"])
-    print(local_time)
-    print(local_date)
+    # local_time, local_date = get_local_time(weather_data["timezone"])
+    # print(local_time)
+    # print(local_date)
     
-    temp = get_celsius(weather_data["main"]["temp"])
-    print(temp)
+    # temp = get_celsius(weather_data["main"]["temp"])
+    # print(temp)
 
-    print(get_icon(weather_data["weather"][0]["icon"]))
+    get_icon(weather_data["weather"][0]["icon"])

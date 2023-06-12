@@ -5,14 +5,14 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget,
                              QVBoxLayout, QHBoxLayout, QLabel,
                              QPushButton, QLineEdit, QGroupBox)
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import (QIcon)
+from PyQt6.QtGui import QIcon
 import PyQt6.QtWidgets
 
 from rich import print
 from rich.traceback import install
 install(show_locals=True)
 
-import tools
+from tools import get_weather, get_local_time, get_celsius, get_icon
 
 ### Varaibles ###
 
@@ -23,12 +23,11 @@ class MainWindow(QMainWindow):
 
         self.setup_ui()
         self.event_handlers()
-        self.update_ui()
 
     def setup_ui(self):
         ### Window Setup ###
         self.setWindowTitle("Weather App")
-        self.setGeometry(100, 100, 300, 500)
+        self.setGeometry(100, 100, 300, 260)
 
         ### UI Setup ###
         ## Search UI
@@ -131,10 +130,57 @@ class MainWindow(QMainWindow):
 
 
     def event_handlers(self):
-        pass
+        self.btn_search.clicked.connect(self.update_ui)
 
     def update_ui(self):
-        pass
+        if self.txt_search.text() != "":
+            try:
+                # Get Weather & Location Data
+                city_name, country_code = self.txt_search.text().split(", ")
+                weather_data = get_weather(city_name, country_code)
+                local_time, local_date = get_local_time(weather_data["timezone"])
+                icon = get_icon(weather_data["weather"][0]["icon"])
+
+                temp = get_celsius(weather_data["main"]["temp"])
+                description = weather_data["weather"][0]["description"].title()
+
+                temp_feels = get_celsius(weather_data["main"]["feels_like"])
+                temp_max = get_celsius(weather_data["main"]["temp_max"])
+                temp_min = get_celsius(weather_data["main"]["temp_min"])
+                humidity = weather_data["main"]["humidity"]
+                wind = round(weather_data["wind"]["speed"] * 3.6, 2)
+
+                # Update Seach Input
+                self.txt_search.clear()
+                self.txt_search.setPlaceholderText(f"{city_name}, {country_code}")
+
+                # Update Info 1 Labels
+                self.lbl_city.setText(f"City: {city_name}")
+                self.lbl_country.setText(f"Country: {country_code}")
+
+                # Update Info 2 Labels
+                self.lbl_time.setText(f"Time: {local_time}")
+                self.lbl_date.setText(f"Time: {local_date}")
+
+                # Update Weather Info Labels
+                self.lbl_icon.setPixmap(icon)
+                self.lbl_temp.setText(temp)
+                self.lbl_description.setText(description)
+
+                # Update Weather Detail Labels
+                self.lbl_feels.setText(f"Feels: {temp_feels}")
+                self.lbl_max.setText(f"Max: {temp_max}")
+                self.lbl_min.setText(f"Max: {temp_min}")
+                self.lbl_humidity.setText(f"Humidity: {humidity}%")
+                self.lbl_wind.setText(f"Wind: {wind}km/ph")
+
+            except Exception as error:
+                print("An exception occurred:", error)
+                self.txt_search.clear()
+                self.txt_search.setPlaceholderText("Entry format > Melbourne, AU")
+        else:
+            self.txt_search.setPlaceholderText("Entry format > Melbourne, AU")
+        
 
 
 
