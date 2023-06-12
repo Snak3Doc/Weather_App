@@ -132,6 +132,7 @@ class MainWindow(QMainWindow):
     def event_handlers(self):
         self.btn_search.clicked.connect(self.update_ui)
 
+
     def update_ui(self):
         if self.txt_search.text() != "":
             try:
@@ -181,8 +182,6 @@ class MainWindow(QMainWindow):
         else:
             self.txt_search.setPlaceholderText("Entry format > Melbourne, AU")
         
-
-
 
 ### App Execution ###
 if __name__ == "__main__":
