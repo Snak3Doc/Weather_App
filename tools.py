@@ -101,7 +101,7 @@ def get_celsius(kelvin_temp):
     celsius_temp = f"{int(kelvin_temp - 273.15)}{CELSIUS_SYMBOL}"
     return celsius_temp
 
-def validate_string(input_string):
+def validate_string_format(input_string):
     pattern = r'^\w+,\s\w+$'
     return bool(re.match(pattern, input_string))
     #* Regex pattern explanation
