@@ -36,8 +36,13 @@ def get_weather(city_name, country_code):
         
         else:
             return f"Error, status code: {response.status_code}"
-    except:
+        
+    except (ConnectionError, Timeout):
         print("Connection Error")
+    except HTTPError as e:
+        print(f"Error, status code: {e.response.status_code}")
+    except RequestException:
+        print("An error occurred during the request")
     
 
 def get_forcast(city_name, country_code): #TODO: Update Error handling to match get_weather()
@@ -59,7 +64,7 @@ def get_forcast(city_name, country_code): #TODO: Update Error handling to match 
 
 def get_icon(icon_code):
     icon_path = WORK_DIR/"weather_icons"/f"{icon_code}.png"
-    if icon_path.exists():
+    if icon_path.exists(): #TODO: Modify the if else to check if the path doesnt exist then download the icon
         print("Icon already downloaded")
         pass
     
