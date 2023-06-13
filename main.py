@@ -163,7 +163,7 @@ class MainWindow(QMainWindow):
 
                     # Update Info 2 Labels
                     self.lbl_time.setText(f"Time: {local_time}")
-                    self.lbl_date.setText(f"Time: {local_date}")
+                    self.lbl_date.setText(f"Date: {local_date}")
 
                     # Update Weather Info Labels
                     self.lbl_icon.setPixmap(icon)
