@@ -105,16 +105,16 @@ if __name__ == "__main__":
     country_code = "AU"
 
     weather_data = get_weather(city_name, country_code)
-    # forcast_data = get_forcast(city_name, country_code)
+    forcast_data = get_forcast(city_name, country_code)
 
-    # write_json(weather_data, "data_weather.json")
-    # write_json(forcast_data, "data_forcast.json")
+    write_json(weather_data, "data_weather.json")
+    write_json(forcast_data, "data_forcast.json")
 
-    # local_time, local_date = get_local_time(weather_data["timezone"])
-    # print(local_time)
-    # print(local_date)
+    local_time, local_date = get_local_time(weather_data["timezone"])
+    print(local_time)
+    print(local_date)
     
-    # temp = get_celsius(weather_data["main"]["temp"])
-    # print(temp)
+    temp = get_celsius(weather_data["main"]["temp"])
+    print(temp)
 
     get_icon(weather_data["weather"][0]["icon"])
