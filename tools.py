@@ -2,12 +2,14 @@
 ### Imports ###
 from pathlib import Path
 import json
+import re
 from datetime import datetime, timedelta
 from os import getenv
 from dotenv import load_dotenv
 load_dotenv()
 
 import requests
+from requests.exceptions import RequestException, ConnectionError, HTTPError, Timeout
 from PyQt6.QtGui import QIcon
 from rich import print
 from rich.traceback import install
@@ -35,10 +37,10 @@ def get_weather(city_name, country_code):
         else:
             return f"Error, status code: {response.status_code}"
     except:
-        return "Connection Error"
+        print("Connection Error")
     
 
-def get_forcast(city_name, country_code):
+def get_forcast(city_name, country_code): #TODO: Update Error handling to match get_weather()
     url = f"https://api.openweathermap.org/data/2.5/forecast?q={city_name},{country_code}&appid={API_KEY}"
     try:
         response = requests.get(url)
@@ -59,8 +61,7 @@ def get_icon(icon_code):
     icon_path = WORK_DIR/"weather_icons"/f"{icon_code}.png"
     if icon_path.exists():
         print("Icon already downloaded")
-        icon = QIcon(str(icon_path)).pixmap(92, 92)
-        return icon
+        pass
     
     else:
         url = f"http://openweathermap.org/img/w/{icon_code}.png"
@@ -70,14 +71,21 @@ def get_icon(icon_code):
                 with open(WORK_DIR/"weather_icons"/f"{icon_code}.png", "wb") as icon_file:
                     icon_file.write(response.content)
                     print("Downloaded Icon")
-                    icon_path = WORK_DIR/"weather_icons"/f"{icon_code}.png"
-                    icon = QIcon(str(icon_path)).pixmap(92, 92)
-                    return icon
-        
             else:
-                return f"Error, status code: {response.status_code}"       
-        except:
+                print(f"Error, status code: {response.status_code}")
+
+        except (ConnectionError, Timeout):
             print("Connection Error")
+        except HTTPError as e:
+            print(f"Error, status code: {e.response.status_code}")
+        except RequestException:
+            print("An error occurred during the request")
+
+    try:
+        icon = QIcon(str(icon_path)).pixmap(92, 92)
+        return icon
+    except:
+        print("Error creating icon")
 
 
 def get_local_time(tz_offset):
@@ -92,6 +100,18 @@ def get_local_time(tz_offset):
 def get_celsius(kelvin_temp):
     celsius_temp = f"{int(kelvin_temp - 273.15)}{CELSIUS_SYMBOL}"
     return celsius_temp
+
+def validate_string(input_string):
+    pattern = r'^\w+,\s\w+$'
+    return bool(re.match(pattern, input_string))
+    #* Regex pattern explanation
+    #* r prefix keeps the formating of the regex pattern
+    #* ^ is the start of the string.
+    #* \w+ matches one or more word characters (letters, digits, or underscores).
+    #* , is a comma.
+    #* \s is a whitespace character (space, tab, newline, etc.).
+    #* \w+ matches one or more word characters again.
+    #* $ is the end of the string.
 
 
 def write_json(data, filename):
