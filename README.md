@@ -13,15 +13,8 @@
     - Humidity
     - Wind Speed
 
-## Requirements
+## 3rd Party Requirements
 - openweathermap API Key
 - requests
 - PyQt6
-- pathlib
-- re
-- datetime
-- dotenv
-- json
-- os
-- sys
 
