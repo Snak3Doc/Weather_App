@@ -102,17 +102,26 @@ def get_celsius(kelvin_temp):
     celsius_temp = f"{int(kelvin_temp - 273.15)}{CELSIUS_SYMBOL}"
     return celsius_temp
 
+
 def validate_string_format(input_string):
-    pattern = r'^\w+,\s\w+$'
+    pattern = r'^[\w\s]+,\s\w+$'
     return bool(re.match(pattern, input_string))
-    #* Regex pattern explanation
-    #* r prefix keeps the formating of the regex pattern
-    #* ^ is the start of the string.
-    #* \w+ matches one or more word characters (letters, digits, or underscores).
-    #* , is a comma.
-    #* \s is a whitespace character (space, tab, newline, etc.).
-    #* \w+ matches one or more word characters again.
-    #* $ is the end of the string.
+
+    #* Examples of how the pattern works:
+        #* "Hanoi, VN" > True
+        #* "New York, US" > True
+        #* "US" > False
+        #* "Hanoi" > False
+
+    #* Regex (aka Regular Expression) pattern explanation:
+        #* r prefix keeps the formating of the regex pattern
+        #* ^ - Start of the line.
+        #* (\w+) - First word, captured in a group. \w matches any word character (alphanumeric or underscore) and + indicates one or more occurrences.
+        #* (?:\s*,?\s*) - Non-capturing group (?: ... ) for optional spaces, followed by an optional comma, and then optional spaces again. \s matches any whitespace character.
+        #* (\w+) - Second word, captured in a group.
+        #* (?:\s*,?\s*) - Same pattern as before, for optional spaces and comma.
+        #* (\w+)? - Third word, captured in a group. The ? makes it optional.
+        #* $ - End of the line.
 
 
 def write_json(data, filename):
@@ -122,20 +131,21 @@ def write_json(data, filename):
 
 ### Experiment With Function Calls Here ###
 if __name__ == "__main__":
-    city_name = "Melbourne"
-    country_code = "AU"
+    print(validate_string_format("a"))
+    # city_name = "Melbourne"
+    # country_code = "AU"
 
-    weather_data = get_weather(city_name, country_code)
-    #forcast_data = get_forcast(city_name, country_code)
+    # weather_data = get_weather(city_name, country_code)
+    # #forcast_data = get_forcast(city_name, country_code)
 
-    write_json(weather_data, "data_weather.json")
-    #write_json(forcast_data, "data_forcast.json")
+    # write_json(weather_data, "data_weather.json")
+    # #write_json(forcast_data, "data_forcast.json")
 
-    local_time, local_date = get_local_time(weather_data["timezone"])
-    print(local_time)
-    print(local_date)
+    # local_time, local_date = get_local_time(weather_data["timezone"])
+    # print(local_time)
+    # print(local_date)
     
-    temp = get_celsius(weather_data["main"]["temp"])
-    print(temp)
+    # temp = get_celsius(weather_data["main"]["temp"])
+    # print(temp)
 
-    get_icon(weather_data["weather"][0]["icon"])
+    # get_icon(weather_data["weather"][0]["icon"])
