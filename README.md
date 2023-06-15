@@ -17,7 +17,10 @@
 - openweathermap API Key
 - requests
 - PyQt6
+
 - pathlib
+- re
+- datetime
 - dotenv
 - json
 - os
