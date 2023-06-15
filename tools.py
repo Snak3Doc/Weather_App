@@ -45,30 +45,26 @@ def get_weather(city_name, country_code):
         print("An error occurred during the request")
     
 
-def get_forcast(city_name, country_code): #TODO: Update Error handling to match get_weather()
-    url = f"https://api.openweathermap.org/data/2.5/forecast?q={city_name},{country_code}&appid={API_KEY}"
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            forcast_data = response.json()
-            return forcast_data
+# def get_forcast(city_name, country_code): #TODO: Update Error handling to match get_weather()
+#     url = f"https://api.openweathermap.org/data/2.5/forecast?q={city_name},{country_code}&appid={API_KEY}"
+#     try:
+#         response = requests.get(url)
+#         if response.status_code == 200:
+#             forcast_data = response.json()
+#             return forcast_data
         
-        elif response.status_code == 404:
-            return "City not found"
+#         elif response.status_code == 404:
+#             return "City not found"
         
-        else:
-            return f"Error, status code: {response.status_code}"
-    except:
-        return "Connection Error"
+#         else:
+#             return f"Error, status code: {response.status_code}"
+#     except:
+#         return "Connection Error"
     
 
 def get_icon(icon_code):
     icon_path = WORK_DIR/"weather_icons"/f"{icon_code}.png"
-    if icon_path.exists(): #TODO: Modify the if else to check if the path doesnt exist then download the icon
-        print("Icon already downloaded")
-        pass
-    
-    else:
+    if not icon_path.exists():
         url = f"http://openweathermap.org/img/w/{icon_code}.png"
         try:
             response = requests.get(url)
@@ -130,10 +126,10 @@ if __name__ == "__main__":
     country_code = "AU"
 
     weather_data = get_weather(city_name, country_code)
-    forcast_data = get_forcast(city_name, country_code)
+    #forcast_data = get_forcast(city_name, country_code)
 
     write_json(weather_data, "data_weather.json")
-    write_json(forcast_data, "data_forcast.json")
+    #write_json(forcast_data, "data_forcast.json")
 
     local_time, local_date = get_local_time(weather_data["timezone"])
     print(local_time)
