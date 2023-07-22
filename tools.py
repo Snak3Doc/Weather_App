@@ -7,10 +7,13 @@ from datetime import datetime, timedelta
 from os import getenv
 from dotenv import load_dotenv
 load_dotenv()
+from PIL import Image
+import os
 
 import requests
 from requests.exceptions import RequestException, ConnectionError, HTTPError, Timeout
 from PyQt6.QtGui import QIcon
+from PyQt6.QtCore import Qt
 from rich import print
 from rich.traceback import install
 install(show_locals=True)
@@ -44,23 +47,27 @@ def get_weather(city_name, country_code):
     except RequestException:
         print("An error occurred during the request")
     
+def get_forecast(city_name, country_code):
+    url = f"https://api.openweathermap.org/data/2.5/forecast?q={city_name},{country_code}&appid={API_KEY}"
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            forecast_data = response.json()
+            return forecast_data
+        
+        elif response.status_code == 404:
+            return "City not found"
+        
+        else:
+            return f"Error, status code: {response.status_code}"
 
-# def get_forcast(city_name, country_code): #TODO: Update Error handling to match get_weather()
-#     url = f"https://api.openweathermap.org/data/2.5/forecast?q={city_name},{country_code}&appid={API_KEY}"
-#     try:
-#         response = requests.get(url)
-#         if response.status_code == 200:
-#             forcast_data = response.json()
-#             return forcast_data
-        
-#         elif response.status_code == 404:
-#             return "City not found"
-        
-#         else:
-#             return f"Error, status code: {response.status_code}"
-#     except:
-#         return "Connection Error"
-    
+    except (ConnectionError, Timeout):
+        print("Connection Error")
+    except HTTPError as e:
+        print(f"Error, status code: {e.response.status_code}")
+    except RequestException:
+        print("An error occurred during the request")
+
 
 def get_icon(icon_code):
     icon_path = WORK_DIR/"weather_icons"/f"{icon_code}.png"
@@ -83,7 +90,11 @@ def get_icon(icon_code):
             print("An error occurred during the request")
 
     try:
-        icon = QIcon(str(icon_path)).pixmap(92, 92)
+        img = Image.open(icon_path)
+        cropped_img = img.crop((0, 10, 50, 40))
+        cropped_img.save(WORK_DIR/"weather_icons"/"temp.png")
+        icon = QIcon(str(WORK_DIR/"weather_icons"/"temp.png")).pixmap(50, 25)
+        os.remove(WORK_DIR/"weather_icons"/"temp.png")
         return icon
     except:
         print("Error creating icon")
@@ -112,6 +123,7 @@ def validate_string_format(input_string):
         #* "New York, US" > True
         #* "US" > False
         #* "Hanoi" > False
+        #* "Hanoi VN" > False
 
     #* Regex (aka Regular Expression) pattern explanation:
         #* r prefix keeps the formating of the regex pattern
@@ -131,7 +143,9 @@ def write_json(data, filename):
 
 ### Experiment With Function Calls Here ###
 if __name__ == "__main__":
-    print(validate_string_format("a"))
+    forecast_data = get_forecast("Hanoi", "VN")
+    write_json(forecast_data, "data_forecast.json")
+    #print(validate_string_format("a"))
     # city_name = "Melbourne"
     # country_code = "AU"
 
