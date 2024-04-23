@@ -13,7 +13,7 @@ install(show_locals=True)
 from rich.console import Console
 console = Console()
 
-from tools import get_weather, get_forecast, get_local_time, get_celsius, get_icon, validate_string_format
+from tools import get_weather, get_forecast, get_local_time, get_celsius, get_icon, validate_str
 
 ### Varaibles ###
 h1_font = QFont("Exo 2", 30)
@@ -207,7 +207,7 @@ class MainWindow(QMainWindow):
 
 
     def update_ui(self):
-        if validate_string_format(self.txt_search.text()):
+        if validate_str(self.txt_search.text()):
             try:
                 # Get Weather & Location Data
                 city_name, country_code = self.txt_search.text().split(", ")
@@ -276,7 +276,7 @@ class MainWindow(QMainWindow):
             self.txt_search.setPlaceholderText("Check format > Hanoi, VN")
         
 
-### App Execution ###
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setFont(h2_font)

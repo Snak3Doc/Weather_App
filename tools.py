@@ -110,30 +110,29 @@ def get_local_time(tz_offset):
 
 
 def get_celsius(kelvin_temp):
-    celsius_temp = f"{int(kelvin_temp - 273.15)}{CELSIUS_SYMBOL}"
+    celsius_temp = f"{int(round(kelvin_temp - 273.15, 0))}{CELSIUS_SYMBOL}"
     return celsius_temp
 
 
-def validate_string_format(input_string):
-    pattern = r'^[\w\s]+,\s\w+$'
-    return bool(re.match(pattern, input_string))
+def validate_str(input_str):
+    regex_pattern = r'^[\w\s]+,\s[\w\s]+$'
+    return bool(re.match(regex_pattern, input_str))
 
-    #* Examples of how the pattern works:
-        #* "Hanoi, VN" > True
-        #* "New York, US" > True
-        #* "US" > False
-        #* "Hanoi" > False
-        #* "Hanoi VN" > False
+    #- Examples of how the pattern works:
+        #- "Hanoi, VN" > True
+        #- "New York, US" > True
+        #- "US" > False
+        #- "Hanoi" > False
+        #- "Hanoi VN" > False
 
-    #* Regex (aka Regular Expression) pattern explanation:
-        #* r prefix keeps the formating of the regex pattern
-        #* ^ - Start of the line.
-        #* (\w+) - First word, captured in a group. \w matches any word character (alphanumeric or underscore) and + indicates one or more occurrences.
-        #* (?:\s*,?\s*) - Non-capturing group (?: ... ) for optional spaces, followed by an optional comma, and then optional spaces again. \s matches any whitespace character.
-        #* (\w+) - Second word, captured in a group.
-        #* (?:\s*,?\s*) - Same pattern as before, for optional spaces and comma.
-        #* (\w+)? - Third word, captured in a group. The ? makes it optional.
-        #* $ - End of the line.
+    #- This pattern ^[\w\s]+,\s[\w\s]+$ works as follows:
+
+        #- ^ asserts the start of the line.
+        #- [\w\s]+ matches one or more word characters or whitespace characters. This allows for multiple words before the comma.
+        #- , matches the comma literally.
+        #- \s matches any whitespace character.
+        #- [\w\s]+ again matches one or more word characters or whitespace characters, allowing for multiple words after the comma.
+        #- $ asserts the end of the line.
 
 
 def write_json(data, filename):
